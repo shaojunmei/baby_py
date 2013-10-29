@@ -83,13 +83,3 @@ class Baby(Base):
         self.rel_path = kwargs.pop('rel_path')
         self.picture_name = kwargs.pop('picture_name')
 
-
-def baby_list(page):
-    baby_count = Baby.query.filter().count()
-    page, per_page = page_utils(baby_count, page)
-    if baby_count > 1:
-        babys = Baby.query.filter()[per_page*(page-1):per_page*page]
-        return babys
-    else:
-        baby = Baby.query.filter().first()
-        return baby

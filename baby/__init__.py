@@ -9,7 +9,7 @@ sys.setdefaultencoding('utf8')
 
 from flask import Flask
 
-from baby.models.database import db
+from models import db
 from .ex_var import CONFIG_FILE
 
 # 创建应用程序入口

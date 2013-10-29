@@ -1,8 +1,8 @@
 # coding: UTF-8
 
 from sqlalchemy import Column, String, Integer, DATETIME, ForeignKey, Float
-from baby.models.database import Base
-from .hospital_model import Doctor
+from database import Base
+from hospital_model import Doctor
 from .baby_model import Baby
 
 SYSTEM_MESSAGE_TABLE = 'system_message'
@@ -39,7 +39,7 @@ class TypeOfMilk(Base):
     type = Column(String(20), nullable=True)
     name = Column(String(50), nullable=True)
 
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         self.type = kwargs.pop('type')
         self.name = kwargs.pop('name')
 
