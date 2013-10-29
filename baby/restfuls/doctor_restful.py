@@ -3,20 +3,11 @@
 from flask.ext import restful
 from flask.ext.restful import reqparse
 
-from baby.util.others import pickler, time_diff, success_dic, fail_dic
+from baby.util.others import success_dic, fail_dic
+from ..util.baby_doctor_commonality import format_baby, doctor_pickler
 
 from ..services.baby_service import baby_collect_list, baby_list
-
-
-def format_baby(baby, resp_suc):
-    """
-        格式化baby对象
-    """
-    baby_pic = pickler.flatten(baby)
-    baby_pic['picture_path'] = baby.rel_path + baby.picture_name
-    baby_birthday = baby.born_birthday
-    baby_pic['time'] = time_diff(baby_birthday)
-    resp_suc['baby_list'].append(baby_pic)
+from ..services.doctor_service import doctor_info
 
 
 class BabyList(restful.Resource):
@@ -62,7 +53,7 @@ class BabyCollect(restful.Resource):
                 doctor_id：登录医生id
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('doctor_id', type=str, required=True, help=u'登录医生id')
+        parser.add_argument('doctor_id', type=str, required=True, help=u'登录医生doctor_id')
         parser.add_argument('page', type=str, required=True, help=u'分页，传入当前page页码')
 
         args = parser.parse_args()
@@ -78,6 +69,34 @@ class BabyCollect(restful.Resource):
                     format_baby(baby_c, resp_suc)
             else:
                 format_baby(baby_collect, resp_suc)
+            return resp_suc
+        else:
+            return resp_fail
+
+
+class DoctorInfo(restful.Resource):
+    """
+        医生我的个人资料
+    """
+    @staticmethod
+    def get():
+        """
+            参数：
+                doctor_id: 医生登录id
+        """
+        parser = reqparse.RequestParser()
+        parser.add_argument('doctor_id', type=str, required=True, help=u'医生登录doctor_id必须。')
+
+        args = parser.parse_args()
+
+        resp_suc = success_dic().dic
+        resp_fail = fail_dic().dic
+        resp_suc['doctor_list'] = []
+
+        doctor_id = args['doctor_id']
+        doctor = doctor_info(doctor_id)
+        if doctor:
+            doctor_pickler(doctor, resp_suc)
             return resp_suc
         else:
             return resp_fail
